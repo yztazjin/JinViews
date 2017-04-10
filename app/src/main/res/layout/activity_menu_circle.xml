@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ttyy.com.jinviews.demo.MainActivity">
+
+    <ttyy.com.jinviews.CircleLayout
+        android:id="@+id/cl_test"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:padding="50dp" />
+
+</LinearLayout>

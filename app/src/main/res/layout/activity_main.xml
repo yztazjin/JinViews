@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp"
+    android:orientation="vertical"
+    tools:context="ttyy.com.jinviews.demo.MainActivity">
+
+    <TextView
+        android:id="@+id/tv_menu_circle"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="Menu Circle Demo"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:background="@drawable/shape_main_menu"/>
+
+    <TextView
+        android:id="@+id/tv_indicator_beizercicle"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="Indicator BeizerCircle Demo"
+        android:layout_marginTop="18dp"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:background="@drawable/shape_main_menu"/>
+
+</LinearLayout>
