@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
@@ -44,6 +43,8 @@ public class SwitchButton extends View {
     boolean mIsToggledTrue;
 
     OnClickListener mInnerClickListener;
+
+    ToggleStateListner mToggleStateListner;
 
     public SwitchButton(Context context) {
         this(context, null);
@@ -96,7 +97,7 @@ public class SwitchButton extends View {
         mTogglePaint.setFilterBitmap(true);
         mTogglePaint.setAntiAlias(true);
 
-        mStrokeWidth = 1.3f;
+        mStrokeWidth = 2f;
         mIsToggledTrue = false;
 
         mToggleCircleMargin = 10;
@@ -149,22 +150,12 @@ public class SwitchButton extends View {
             }
         }
 
-        if (mBarPath == null
+        if (mBarRect == null
                 || mCircleRect == null) {
             float mBarX = 0;
             float mBarY = getMeasuredHeight() / 2 - mToggleBarHeight / 2;
 
-            // 左侧条形bar圆弧
-            RectF mBarLeftRect = new RectF(mBarX, mBarY, mBarX + mToggleBarHeight, mBarY + mToggleBarHeight);
-            // 右侧条形bar圆弧
-            mBarX = getMeasuredWidth();
-            RectF mBarRightRect = new RectF(mBarX - mToggleBarHeight, mBarY, mBarX, mBarY + mToggleBarHeight);
-
-            mBarPath = new Path();
-            mBarPath.moveTo(mBarLeftRect.right / 2, getHeight() / 2 - mBarLeftRect.height() / 2);
-            mBarPath.arcTo(mBarLeftRect, 270, -180);
-            mBarPath.arcTo(mBarRightRect, 90, -180);
-            mBarPath.close();
+            mBarRect = new RectF(mBarX, mBarY, getMeasuredWidth(), mBarY + mToggleBarHeight);
 
             // 移动的toggle circle
             mCircleRect = new RectF(0, 0, mToggleCircleRadius * 2, mToggleCircleRadius * 2);
@@ -189,49 +180,57 @@ public class SwitchButton extends View {
         setToggle(!mIsToggledTrue);
     }
 
+    public void setToggleStateListener(ToggleStateListner listener) {
+        this.mToggleStateListner = listener;
+    }
+
     public void setToggle(boolean value) {
 
-        if (mIsToggledTrue == value) {
+        if (mIsToggledTrue == value
+                || mAnimator.isRunning()) {
             return;
         }
 
-        if(isViewAttachToWindow()){
-            if (mAnimator.isRunning()) {
-                return;
-            } else {
+        try {
+            if (isViewAttachToWindow()) {
                 mIsToggledTrue = value;
                 mAnimator.start();
-            }
-        }else {
-            mIsToggledTrue = value;
-            if(mCircleRect == null
-                    || mBarPath == null){
-                // View 还没有测量
-                return;
-            }
+            } else {
+                mIsToggledTrue = value;
+                if (mCircleRect == null
+                        || mBarRect == null) {
+                    // View 还没有测量
+                    return;
+                }
 
-            if(mIsToggledTrue){
-                mCircleXOffset = getMeasuredWidth() - mCircleRect.width() - mToggleCircleMargin;
-            }else {
-                mCircleXOffset = mToggleCircleMargin;
+                if (mIsToggledTrue) {
+                    mCircleXOffset = getMeasuredWidth() - mCircleRect.width() - mToggleCircleMargin;
+                } else {
+                    mCircleXOffset = mToggleCircleMargin;
+                }
+                postInvalidate();
             }
-            postInvalidate();
+        }finally {
+            if(mToggleStateListner != null){
+                mToggleStateListner.onToggled(mIsToggledTrue);
+            }
         }
     }
 
-    boolean isViewAttachToWindow(){
+    boolean isViewAttachToWindow() {
         return getWindowToken() != null;
     }
 
-    Path mBarPath;
+    RectF mBarRect;
     RectF mCircleRect;
     float mCircleXOffset;
 
     boolean isFirstDraw = true;
+
     @Override
     protected void onDraw(Canvas canvas) {
         int color = -1;
-        if(!isFirstDraw){
+        if (!isFirstDraw) {
             if (mIsToggledTrue) {
                 // 从左向右
                 color = (int) mArgbEvalutar.evaluate((float) mAnimator.getAnimatedValue(), mToggledFalseColor, mToggledTrueColor);
@@ -239,7 +238,7 @@ public class SwitchButton extends View {
                 // 从右向左
                 color = (int) mArgbEvalutar.evaluate((float) mAnimator.getAnimatedValue(), mToggledTrueColor, mToggledFalseColor);
             }
-        }else {
+        } else {
             if (mIsToggledTrue) {
                 // 从左向右
                 color = mToggledTrueColor;
@@ -250,10 +249,9 @@ public class SwitchButton extends View {
             isFirstDraw = false;
         }
 
-        canvas.save();
-        canvas.clipPath(mBarPath);
-        canvas.drawColor(color);
-        canvas.restore();
+        mTogglePaint.setStyle(Paint.Style.FILL);
+        mTogglePaint.setColor(color);
+        canvas.drawRoundRect(mBarRect, mBarRect.height() / 2, mBarRect.height() / 2, mTogglePaint);
 
         drawToggleBar(canvas);
         drawToggleCircle(canvas);
@@ -265,7 +263,7 @@ public class SwitchButton extends View {
         mTogglePaint.setStrokeWidth(mStrokeWidth);
         mTogglePaint.setColor(mStrokeColor);
 
-        canvas.drawPath(mBarPath, mTogglePaint);
+        canvas.drawRoundRect(mBarRect, mBarRect.height() / 2, mBarRect.height() / 2, mTogglePaint);
     }
 
     void drawToggleCircle(Canvas canvas) {
@@ -283,6 +281,10 @@ public class SwitchButton extends View {
         canvas.drawArc(mCircleRect, 0, 360, true, mTogglePaint);
 
         canvas.restore();
+    }
+
+    public interface ToggleStateListner {
+        void onToggled(boolean isToggled);
     }
 
 }
