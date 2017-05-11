@@ -133,7 +133,7 @@ public class SwitchButton extends View {
             if (fraction > 2.5) {
                 mToggleCircleRadius = height / 2 - mToggleCircleMargin;
             } else {
-                mToggleCircleRadius = width / 2.5f - mToggleCircleMargin;
+                mToggleCircleRadius = height / 2.5f - mToggleCircleMargin;
             }
         }
 
@@ -146,7 +146,7 @@ public class SwitchButton extends View {
             if (fraction > 2.5) {
                 mToggleBarHeight = height;
             } else {
-                mToggleBarHeight = width / 2.5f * 2;
+                mToggleBarHeight = height / 2.5f * 2;
             }
         }
 
