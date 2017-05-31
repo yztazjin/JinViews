@@ -387,8 +387,11 @@ public class ToyCoronaView extends ImageView {
 
         int item;
 
+        Handler h;
+
         public ContinuePressTask(int item){
             this.item = item;
+            this.h = new Handler(Looper.getMainLooper());
         }
 
         @Override
@@ -396,7 +399,11 @@ public class ToyCoronaView extends ImageView {
             if(mPressListener != null
                     && item == currentFocusIndex){
 
-                mPressListener.onPressing(item);
+                if(Looper.myLooper() == Looper.getMainLooper()){
+                    mPressListener.onPressing(item);
+                }else {
+                    h.post(this);
+                }
             }
         }
     }
