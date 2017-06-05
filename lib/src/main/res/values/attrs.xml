@@ -61,6 +61,23 @@
             <enum name="bottom" value="2"></enum>
 
         </attr>
+
+        <attr name="leftMenuAutoClose"
+            format="boolean"></attr>
+
+    </declare-styleable>
+
+    <declare-styleable name="SlidingRightMenu">
+        <attr name="rightMenuLayerLevel">
+
+            <enum name="top" value="0"></enum>
+            <enum name="same" value="1"></enum>
+            <enum name="bottom" value="2"></enum>
+
+        </attr>
+
+        <attr name="rightMenuAutoClose"
+            format="boolean"></attr>
     </declare-styleable>
 
 </resources>
