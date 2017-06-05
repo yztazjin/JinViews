@@ -293,7 +293,15 @@ public class SlidingLeftMenu extends FrameLayout {
 
     public boolean isMenuOpend() {
 
-        return mMenuView.getLeft() == 0;
+        if(mLayerLevel == SAME){
+            return mMenuView.getLeft() == 0;
+        }else if(mLayerLevel == TOP){
+            return mMenuView.getLeft() == 0;
+        }else if(mLayerLevel == BOTTOM){
+            return mContentView.getLeft() == mMenuView.getMeasuredWidth();
+        }
+
+        return false;
     }
 
     static LinkedList<SlidingLeftMenu> menus = new LinkedList<>();
