@@ -49,6 +49,11 @@ public class SlidingLeftMenu extends FrameLayout {
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLeftMenu);
             mLayerLevel = ta.getInt(R.styleable.SlidingLeftMenu_leftMenuLayerLevel, 1);
+            if(mLayerLevel != SAME
+                    && mLayerLevel != TOP
+                    && mLayerLevel != BOTTOM){
+                mLayerLevel = SAME;
+            }
             ta.recycle();
         }
 
@@ -300,7 +305,7 @@ public class SlidingLeftMenu extends FrameLayout {
         }else if(mLayerLevel == BOTTOM){
             return mContentView.getLeft() == mMenuView.getMeasuredWidth();
         }
-            
+
         // 默认同级
         return mMenuView.getLeft() == 0;
     }
