@@ -1,6 +1,7 @@
 package ttyy.com.jinviews.swipe;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -10,6 +11,8 @@ import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import java.util.LinkedList;
+
+import ttyy.com.jinviews.R;
 
 /**
  * author: admin
@@ -22,8 +25,14 @@ import java.util.LinkedList;
 
 public class SlidingLeftMenu extends FrameLayout {
 
+    static final int SAME = 1;
+    static final int TOP = 0;
+    static final int BOTTOM = 2;
+
     View mMenuView;
     View mContentView;
+
+    int mLayerLevel;//0 覆盖在Content上; 1 Content同级; 2 Content下面
 
     public SlidingLeftMenu(Context context) {
         this(context, null);
@@ -36,6 +45,13 @@ public class SlidingLeftMenu extends FrameLayout {
     public SlidingLeftMenu(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mViewDragHelper = ViewDragHelper.create(this, mDragCallback);
+
+        if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLeftMenu);
+            mLayerLevel = ta.getInt(R.styleable.SlidingLeftMenu_layerLevel, 1);
+            ta.recycle();
+        }
+
     }
 
     @Override
@@ -47,7 +63,21 @@ public class SlidingLeftMenu extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        mMenuView.layout(-mMenuView.getMeasuredWidth(), 0, 0, mMenuView.getMeasuredHeight());
+        switch (mLayerLevel) {
+            case BOTTOM:
+                mContentView.bringToFront();
+                mMenuView.layout(0, 0, mMenuView.getMeasuredWidth(), mMenuView.getMeasuredHeight());
+                break;
+            case TOP:
+                mMenuView.bringToFront();
+                mMenuView.layout(-mMenuView.getMeasuredWidth(), 0, 0, mMenuView.getMeasuredHeight());
+                break;
+            case SAME:
+            default:
+                mMenuView.layout(-mMenuView.getMeasuredWidth(), 0, 0, mMenuView.getMeasuredHeight());
+                break;
+
+        }
         mContentView.layout(0, 0, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());
     }
 
@@ -124,7 +154,9 @@ public class SlidingLeftMenu extends FrameLayout {
                 return false;
             }
 
-            if (child == mContentView) {
+            View focusView = getFocusView();
+
+            if (child == focusView) {
                 if (!mSupportMultipleOpen) {
 
                     if (isLastFocusedMenuOpening()) {
@@ -149,20 +181,22 @@ public class SlidingLeftMenu extends FrameLayout {
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
 
-            mMenuView.layout(mMenuView.getLeft() + dx,
-                    0,
-                    mMenuView.getRight() + dx,
-                    mMenuView.getMeasuredHeight());
+            if(mLayerLevel == SAME){
+                mMenuView.layout(mMenuView.getLeft() + dx,
+                        0,
+                        mMenuView.getRight() + dx,
+                        mMenuView.getMeasuredHeight());
+            }
         }
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
 
-            if(left < 0){
+            if (left < 0) {
                 left = 0;
             }
 
-            if(left > mMenuView.getMeasuredWidth()){
+            if (left > mMenuView.getMeasuredWidth()) {
                 left = mMenuView.getMeasuredWidth();
             }
 
@@ -173,7 +207,17 @@ public class SlidingLeftMenu extends FrameLayout {
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
 
-            if (mMenuView.getLeft() > -mMenuView.getMeasuredWidth() / 2) {
+            float focusX;
+            if(mLayerLevel == SAME
+                    || mLayerLevel == BOTTOM){
+                // 焦点View mContentView
+                focusX = mContentView.getLeft();
+            }else{
+                // 焦点View mMenuView
+                focusX = mMenuView.getRight();
+            }
+
+            if (focusX > mMenuView.getMeasuredWidth() / 2) {
                 // 打开菜单
                 openMenu();
             } else {
@@ -202,6 +246,17 @@ public class SlidingLeftMenu extends FrameLayout {
         }
     }
 
+    View getFocusView(){
+        if(mLayerLevel == SAME
+                || mLayerLevel == BOTTOM){
+            // 焦点View mContentView
+            return mContentView;
+        }else {
+            // 焦点View mMenuView
+            return mMenuView;
+        }
+    }
+
     @Override
     public void computeScroll() {
         super.computeScroll();
@@ -212,7 +267,12 @@ public class SlidingLeftMenu extends FrameLayout {
 
     public void closeMenu() {
 
-        mViewDragHelper.smoothSlideViewTo(mContentView, 0, 0);
+        if(getFocusView() == mContentView){
+            mViewDragHelper.smoothSlideViewTo(mContentView, 0, 0);
+        }else {
+            mViewDragHelper.smoothSlideViewTo(mMenuView, -mMenuView.getMeasuredWidth(), 0);
+        }
+
         postInvalidate();
 
         mLastOpeningMenu = null;
@@ -220,7 +280,12 @@ public class SlidingLeftMenu extends FrameLayout {
 
     public void openMenu() {
 
-        mViewDragHelper.smoothSlideViewTo(mContentView, mMenuView.getMeasuredWidth(), 0);
+        if(getFocusView() == mContentView){
+            mViewDragHelper.smoothSlideViewTo(mContentView, mMenuView.getMeasuredWidth(), 0);
+        }else {
+            mViewDragHelper.smoothSlideViewTo(mMenuView, 0, 0);
+        }
+
         postInvalidate();
 
         mLastOpeningMenu = this;
