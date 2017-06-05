@@ -47,6 +47,7 @@ public class SlidingRightMenu extends FrameLayout {
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingRightMenu);
             mLayerLevel = ta.getInt(R.styleable.SlidingRightMenu_rightMenuLayerLevel, 1);
+            mSupportMultipleOpen = !ta.getBoolean(R.styleable.SlidingRightMenu_rightMenuAutoClose, false);
             if(mLayerLevel != SAME
                     && mLayerLevel != TOP
                     && mLayerLevel != BOTTOM){
