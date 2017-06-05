@@ -48,7 +48,7 @@ public class SlidingLeftMenu extends FrameLayout {
 
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLeftMenu);
-            mLayerLevel = ta.getInt(R.styleable.SlidingLeftMenu_layerLevel, 1);
+            mLayerLevel = ta.getInt(R.styleable.SlidingLeftMenu_leftMenuLayerLevel, 1);
             ta.recycle();
         }
 
