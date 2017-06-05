@@ -54,7 +54,7 @@
     </declare-styleable>
 
     <declare-styleable name="SlidingLeftMenu">
-        <attr name="layerLevel">
+        <attr name="leftMenuLayerLevel">
 
             <enum name="top" value="0"></enum>
             <enum name="same" value="1"></enum>
