@@ -300,8 +300,9 @@ public class SlidingLeftMenu extends FrameLayout {
         }else if(mLayerLevel == BOTTOM){
             return mContentView.getLeft() == mMenuView.getMeasuredWidth();
         }
-
-        return false;
+            
+        // 默认同级
+        return mMenuView.getLeft() == 0;
     }
 
     static LinkedList<SlidingLeftMenu> menus = new LinkedList<>();
