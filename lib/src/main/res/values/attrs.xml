@@ -2,55 +2,24 @@
 <resources>
 
     <declare-styleable name="BeizerCircleIndicatedViewPager">
-
-        <attr name="strokeColor"
-            format="color|reference"></attr>
-
-        <attr name="strokeWidth"
-            format="dimension|reference"></attr>
-
-        <attr name="indicateColor"
-            format="color|reference"></attr>
-        
-        <attr name="indicateRadius"
-            format="dimension|reference"></attr>
-            
-        <attr name="indicateDistance"
-            format="dimension|reference"></attr>
-
-        <attr name="indicateBottomMargin"
-            format="dimension|reference"></attr>
-
+        <attr name="strokeColor" format="color|reference"></attr>
+        <attr name="strokeWidth" format="dimension|reference"></attr>
+        <attr name="indicateColor" format="color|reference"></attr>
+        <attr name="indicateRadius" format="dimension|reference"></attr>
+        <attr name="indicateDistance" format="dimension|reference"></attr>
+        <attr name="indicateBottomMargin" format="dimension|reference"></attr>
     </declare-styleable>
 
     <declare-styleable name="SwitchButton">
-        <attr name="toggleStrokeWidth"
-            format="dimension|reference"/>
-
-        <attr name="toggleStrokeColor"
-            format="color|reference"/>
-
-        <attr name="toggleCircleRadius"
-            format="dimension|reference"/>
-
-        <attr name="toggleCircleMargin"
-            format="dimension|reference"/>
-
-        <attr name="toggleBarHeight"
-            format="dimension|reference"/>
-
-        <attr name="toggleTrueColor"
-            format="color|reference"/>
-
-        <attr name="toggleFalseColor"
-            format="color|reference"/>
-
-        <attr name="toggleCircleColor"
-            format="color|reference"/>
-
-        <attr name="toggleStatus"
-            format="boolean|reference"/>
-
+        <attr name="toggleStrokeWidth" format="dimension|reference" />
+        <attr name="toggleStrokeColor" format="color|reference" />
+        <attr name="toggleCircleRadius" format="dimension|reference" />
+        <attr name="toggleCircleMargin" format="dimension|reference" />
+        <attr name="toggleBarHeight" format="dimension|reference" />
+        <attr name="toggleTrueColor" format="color|reference" />
+        <attr name="toggleFalseColor" format="color|reference" />
+        <attr name="toggleCircleColor" format="color|reference" />
+        <attr name="toggleStatus" format="boolean|reference" />
     </declare-styleable>
 
     <declare-styleable name="SlidingLeftMenu">
@@ -62,9 +31,7 @@
 
         </attr>
 
-        <attr name="leftMenuAutoClose"
-            format="boolean"></attr>
-
+        <attr name="leftMenuAutoClose" format="boolean"></attr>
     </declare-styleable>
 
     <declare-styleable name="SlidingRightMenu">
@@ -76,8 +43,63 @@
 
         </attr>
 
-        <attr name="rightMenuAutoClose"
-            format="boolean"></attr>
+        <attr name="rightMenuAutoClose" format="boolean"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="ChatBubblesImageView">
+        <attr name="ivBubbleStrokeColor" format="color|reference"></attr>
+        <attr name="ivBubbleStrokeWidth" format="dimension|reference"></attr>
+        <attr name="ivBubbleArrowLocation">
+            <enum name="LEFT" value="0"></enum>
+            <enum name="RIGHT" value="1"></enum>
+            <enum name="TOP" value="2"></enum>
+            <enum name="BOTTOM" value="3"></enum>
+        </attr>
+        <attr name="ivBubbleArrowDimensionInX" format="dimension|reference"></attr>
+        <attr name="ivBubbleArrowDimensionInY" format="dimension|reference"></attr>
+        <attr name="ivBubbleArrowOffsetXDist" format="dimension|reference"></attr>
+        <attr name="ivBubbleArrowOffsetYDist" format="dimension|reference"></attr>
+        <attr name="ivBubbleRectRadius" format="dimension|reference"></attr>
+        <attr name="ivBubbleStuffColor" format="color|reference"></attr>
+        <attr name="ivBubbleRectImage" format="reference"></attr>
+        <attr name="ivBubbleImageRangeMax" format="dimension|reference"></attr>
+        <attr name="ivBubbleImageRangeMin" format="dimension|reference"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="ChatBubblesLinearLayout">
+        <attr name="llBubbleStrokeColor" format="color|reference"></attr>
+        <attr name="llBubbleStrokeWidth" format="dimension|reference"></attr>
+        <attr name="llBubbleArrowLocation">
+            <enum name="LEFT" value="0"></enum>
+            <enum name="RIGHT" value="1"></enum>
+            <enum name="TOP" value="2"></enum>
+            <enum name="BOTTOM" value="3"></enum>
+        </attr>
+        <attr name="llBubbleArrowDimensionInX" format="dimension|reference"></attr>
+        <attr name="llBubbleArrowDimensionInY" format="dimension|reference"></attr>
+        <attr name="llBubbleArrowOffsetXDist" format="dimension|reference"></attr>
+        <attr name="llBubbleArrowOffsetYDist" format="dimension|reference"></attr>
+        <attr name="llBubbleRectRadius" format="dimension|reference"></attr>
+        <attr name="llBubbleStuffColor" format="color|reference"></attr>
+        <attr name="llBubbleRectImage" format="reference"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="ChatBubblesTextView">
+        <attr name="tvBubbleStrokeColor" format="color|reference"></attr>
+        <attr name="tvBubbleStrokeWidth" format="dimension|reference"></attr>
+        <attr name="tvBubbleArrowLocation">
+            <enum name="LEFT" value="0"></enum>
+            <enum name="RIGHT" value="1"></enum>
+            <enum name="TOP" value="2"></enum>
+            <enum name="BOTTOM" value="3"></enum>
+        </attr>
+        <attr name="tvBubbleArrowDimensionInX" format="dimension|reference"></attr>
+        <attr name="tvBubbleArrowDimensionInY" format="dimension|reference"></attr>
+        <attr name="tvBubbleArrowOffsetXDist" format="dimension|reference"></attr>
+        <attr name="tvBubbleArrowOffsetYDist" format="dimension|reference"></attr>
+        <attr name="tvBubbleRectRadius" format="dimension|reference"></attr>
+        <attr name="tvBubbleStuffColor" format="color|reference"></attr>
+        <attr name="tvBubbleRectImage" format="reference"></attr>
     </declare-styleable>
 
 </resources>
