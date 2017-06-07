@@ -3,15 +3,16 @@ package ttyy.com.jinviews.chat;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
@@ -33,7 +34,7 @@ public class ChatBubblesLinearLayout extends LinearLayout implements ChatBubbleI
 
     int mBubbleStuffColor;
     Shader mBubblePaintShader;
-    Bitmap mBitmap;
+    Drawable mShaderSourceDrawable;
 
     int mBubbleRectStrokeColor;
     int mBubbleRectStrokeWidth;
@@ -76,8 +77,8 @@ public class ChatBubblesLinearLayout extends LinearLayout implements ChatBubbleI
             mArrowDimensionSizeInX = ta.getDimensionPixelSize(R.styleable.ChatBubblesLinearLayout_llBubbleArrowDimensionInX, 20);
 
             int bubbleRectImageResId = ta.getResourceId(R.styleable.ChatBubblesLinearLayout_llBubbleRectImage, -1);
-            if(bubbleRectImageResId != -1){
-                mBitmap = BitmapFactory.decodeResource(getResources(), bubbleRectImageResId);
+            if (bubbleRectImageResId != -1) {
+                mShaderSourceDrawable = getResources().getDrawable(bubbleRectImageResId);
             }
 
             mArrowLocation = ta.getInt(R.styleable.ChatBubblesLinearLayout_llBubbleArrowLocation, ARROW_LOCATION_LEFT);
@@ -123,13 +124,17 @@ public class ChatBubblesLinearLayout extends LinearLayout implements ChatBubbleI
 
     @Override
     public void setBubbleRectImageResource(int resId) {
-        mBitmap = BitmapFactory.decodeResource(getResources(), resId);
+        mBubbleRectPath = null;
+        mBubblePaintShader = null;
+        mShaderSourceDrawable = getResources().getDrawable(resId);
         postInvalidate();
     }
 
     @Override
     public void setBubbleRectImageBitmap(Bitmap mBitmap) {
-        this.mBitmap = mBitmap;
+        mBubbleRectPath = null;
+        mBubblePaintShader = null;
+        mShaderSourceDrawable = new BitmapDrawable(mBitmap);
         postInvalidate();
     }
 
@@ -137,6 +142,25 @@ public class ChatBubblesLinearLayout extends LinearLayout implements ChatBubbleI
     public void setBubbleRectStrokeColor(int color) {
         mBubbleRectStrokeColor = color;
         postInvalidate();
+    }
+
+    @Override
+    public void setBackground(Drawable background) {
+        setBackgroundDrawable(background);
+    }
+
+    @Override
+    public void setBackgroundDrawable(Drawable background) {
+        mBubbleRectPath = null;
+        mBubblePaintShader = null;
+        mShaderSourceDrawable = background;
+        postInvalidate();
+    }
+
+    @Override
+    public void setBackgroundResource(@DrawableRes int resid) {
+        Drawable drawable = getResources().getDrawable(resid);
+        setBackgroundDrawable(drawable);
     }
 
     @Override
@@ -172,38 +196,24 @@ public class ChatBubblesLinearLayout extends LinearLayout implements ChatBubbleI
 
     @Override
     public Shader getPaintBubbleRectShader() {
-
         if (mBubblePaintShader != null) {
             return mBubblePaintShader;
         }
 
-        if (mBitmap == null) {
+        if (mShaderSourceDrawable == null) {
             return null;
         }
-
-        // 适配处理
-        Matrix matrix = new Matrix();
-
-        float bmWidth = mBitmap.getWidth();
-        float bmHeight = mBitmap.getHeight();
-
-        float viewWidth = getMeasuredWidth();
-        float viewHeight = getMeasuredHeight();
-
-        float sx = viewWidth / bmWidth;
-        float sy = viewHeight / bmHeight;
-
-        matrix.postScale(sx, sy);
 
         Bitmap tmp = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
         Canvas tmpCanvas = new Canvas(tmp);
         tmpCanvas.drawColor(Color.WHITE);
-        tmpCanvas.drawBitmap(mBitmap, matrix, mBubblePaint);
-
+        mShaderSourceDrawable.setBounds(0, 0, getWidth(), getHeight());
+        mShaderSourceDrawable.draw(tmpCanvas);
         mBubblePaintShader = new BitmapShader(tmp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
 
-        mBitmap.recycle();
         tmp.recycle();
+        mShaderSourceDrawable = null;
+
         return mBubblePaintShader;
     }
 
