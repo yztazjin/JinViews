@@ -205,7 +205,8 @@ public class ChatBubblesTextView extends TextView implements ChatBubbleIntf {
         mShaderSourceDrawable.draw(tmpCanvas);
         mBubblePaintShader = new BitmapShader(tmp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
 
-        tmp.recycle();
+        // tmp.recycler()在某些机型或者系统下会导致Shader失效
+        // tmp.recycle();
         mShaderSourceDrawable = null;
 
         return mBubblePaintShader;
