@@ -294,7 +294,8 @@ public class ChatBubblesImageView extends ImageView implements ChatBubbleIntf {
 
             tmpCanvas.drawBitmap(mBitmap, matrix, mBubblePaint);
 
-            mBitmap.recycle();
+            // tmp.recycler()在某些机型或者系统下会导致Shader失效
+            // tmp.recycle();
             mBitmap = null;
         }else {
 
@@ -305,7 +306,6 @@ public class ChatBubblesImageView extends ImageView implements ChatBubbleIntf {
         }
 
         mBubblePaintShader = new BitmapShader(tmp, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        tmp.recycle();
 
         return mBubblePaintShader;
     }
