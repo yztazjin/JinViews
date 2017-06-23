@@ -142,9 +142,13 @@ public class ChatBubblesImageView extends ImageView implements ChatBubbleIntf {
     }
 
     @Override
+    public void setImageResource(@DrawableRes int resId) {
+        setBubbleRectImageResource(resId);
+    }
+
+    @Override
     public void setImageBitmap(Bitmap bm) {
-        this.mBitmap = bm;
-        requestLayout();
+        setBubbleRectImageBitmap(bm);
     }
 
     @Override
