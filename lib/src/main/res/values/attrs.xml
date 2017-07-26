@@ -101,5 +101,12 @@
         <attr name="tvBubbleStuffColor" format="color|reference"></attr>
         <attr name="tvBubbleRectImage" format="reference"></attr>
     </declare-styleable>
+    
+      <declare-styleable name="CircleIndicatedViewPager">
+        <attr name="indicatorColor" format="color|reference"></attr>
+        <attr name="cursorColor" format="color|reference"></attr>
+        <attr name="indicatorXOffset" format="dimension|reference"></attr>
+        <attr name="indicatorYOffset" format="dimension|reference"></attr>
+    </declare-styleable>
 
 </resources>
