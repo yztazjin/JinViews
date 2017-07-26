@@ -198,12 +198,23 @@ public class SlidingLeftMenu extends FrameLayout {
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
 
-            if (left < 0) {
-                left = 0;
-            }
+            if(mLayerLevel == TOP){
+                if(left < - mMenuView.getMeasuredWidth()){
+                    left = -mMenuView.getMeasuredWidth();
+                }
 
-            if (left > mMenuView.getMeasuredWidth()) {
-                left = mMenuView.getMeasuredWidth();
+                if(left > 0){
+                    left = 0;
+                }
+
+            }else {
+                if (left < 0) {
+                    left = 0;
+                }
+
+                if (left > mMenuView.getMeasuredWidth()) {
+                    left = mMenuView.getMeasuredWidth();
+                }
             }
 
             return left;

@@ -71,7 +71,7 @@ public class NestableViewPager extends ViewPager {
 
                         }else{
                             // 向左滑动
-                            if(currentIndex == getChildCount() - 1){
+                            if(currentIndex == getAdapter().getCount() - 1){
                                 // 从最后一个Item向左滑动
                                 allowParentInterceptTouchEvent(getParent());
                             }
