@@ -8,7 +8,7 @@
     tools:context="ttyy.com.jinviews.demo.MainActivity"
     android:background="#eee">
 
-    <ttyy.com.jinviews.BeizerCircleIndicatedViewPager
+    <ttyy.com.jinviews.pagers.BeizerCircleIndicatedViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,6 +18,6 @@
         app:indicateRadius="15dp"
         app:indicateBottomMargin="45dp"
         app:indicateDistance="15dp"
-        app:strokeWidth="5dp"></ttyy.com.jinviews.BeizerCircleIndicatedViewPager>
+        app:strokeWidth="5dp"></ttyy.com.jinviews.pagers.BeizerCircleIndicatedViewPager>
 
 </LinearLayout>

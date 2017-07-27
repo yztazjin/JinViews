@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import ttyy.com.jinviews.BeizerCircleIndicatedViewPager;
+import ttyy.com.jinviews.pagers.BeizerCircleIndicatedViewPager;
 
 public class IndicatorBeizerCircleActivity extends AppCompatActivity {
 
