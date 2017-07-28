@@ -116,8 +116,9 @@
         <attr name="rightProgress" format="integer|reference"/>
         <attr name="thumbSize" format="dimension|reference"/>
         <attr name="barHeight" format="dimension|reference"/>
+        <attr name="barUnRangeColor" format="color|reference"/>
+        <attr name="barRangeColor" format="color|reference"/>
         <attr name="thumbDrawable" format="color|reference"/>
-        <attr name="barDrawable" format="color|reference"/>
     </declare-styleable>
 
 </resources>
