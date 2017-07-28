@@ -2,10 +2,13 @@ package ttyy.com.jinviews.bar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -25,20 +28,19 @@ import ttyy.com.jinviews.R;
  */
 public class RangeBar extends FrameLayout {
 
-    ImageView thumb_left;
-    ImageView thumb_right;
+    ImageView mThumbLeftView;
+    ImageView mThumbRightView;
     View mBarView;
-    int thumb_size = 50;
-    int bar_height = 8;
+
+    int thumbPixelSize = 50;
+    int barPixelHeight = 8;
 
     int max = 100;
     int min = 0;
-    int leftProgress = 0;
-    int rightProgress = 100;
+    int mLeftProgress = 0;
+    int mRightProgress = 100;
 
-    Drawable thumbDrawable;
-    Drawable barDrawable;
-
+    RangeBarProgressDrawable mProgressDrawable;
     ProgressCallback mCallback;
 
     public RangeBar(@NonNull Context context) {
@@ -54,47 +56,73 @@ public class RangeBar extends FrameLayout {
     public RangeBar(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        Drawable thumbDrawable = null;
+        int mUnRangeColor = Color.parseColor("#eeeeee");
+        int mRangeColor = Color.parseColor("#ff00ff");
+
         if(attrs != null){
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RangeBar);
-            thumb_size = ta.getDimensionPixelSize(R.styleable.RangeBar_thumbSize, 50);
-            bar_height = ta.getDimensionPixelOffset(R.styleable.RangeBar_barHeight, 8);
+            thumbPixelSize = ta.getDimensionPixelSize(R.styleable.RangeBar_thumbSize, 50);
+            barPixelHeight = ta.getDimensionPixelOffset(R.styleable.RangeBar_barHeight, 8);
             thumbDrawable = ta.getDrawable(R.styleable.RangeBar_thumbDrawable);
-            barDrawable = ta.getDrawable(R.styleable.RangeBar_barDrawable);
+            mUnRangeColor = ta.getColor(R.styleable.RangeBar_barUnRangeColor, mUnRangeColor);
+            mRangeColor = ta.getColor(R.styleable.RangeBar_barRangeColor, mRangeColor);
             max = ta.getInt(R.styleable.RangeBar_max, 100);
             min = ta.getInt(R.styleable.RangeBar_min, 0);
-            leftProgress = ta.getInt(R.styleable.RangeBar_leftProgress, min);
-            rightProgress = ta.getInt(R.styleable.RangeBar_rightProgress, max);
+            mLeftProgress = ta.getInt(R.styleable.RangeBar_leftProgress, min);
+            mRightProgress = ta.getInt(R.styleable.RangeBar_rightProgress, max);
             ta.recycle();
         }
 
+
         initWidgets(context);
 
+        mProgressDrawable = new RangeBarProgressDrawable();
+        mProgressDrawable.setRangeColor(mRangeColor)
+                .setUnRangeColor(mUnRangeColor)
+                .setCorners(barPixelHeight / 2)
+                .setRangeLeftValue(thumbPixelSize / 2)
+                .setRangeRightValue(thumbPixelSize / 2);
+
+        if(thumbDrawable == null){
+            GradientDrawable tmp = new GradientDrawable();
+            tmp.setCornerRadius(thumbPixelSize / 2);
+            tmp.setColor(Color.parseColor("#ff00ff"));
+            thumbDrawable = tmp;
+        }
+
+        mBarView.setBackground(mProgressDrawable);
+        mThumbLeftView.setImageDrawable(thumbDrawable);
+        mThumbRightView.setImageDrawable(thumbDrawable);
 
     }
 
     void initWidgets(Context context){
 
         mBarView = new View(context);
-        mBarView.setBackground(barDrawable);
         FrameLayout.LayoutParams barParams = new LayoutParams(
                 LayoutParams.MATCH_PARENT,
-                bar_height);
+                barPixelHeight);
         barParams.gravity = Gravity.CENTER_VERTICAL;
-        barParams.leftMargin = thumb_size;
-        barParams.rightMargin = thumb_size;
         addView(mBarView, barParams);
 
-        thumb_left = new ImageView(context);
-        thumb_left.setImageDrawable(thumbDrawable);
-        FrameLayout.LayoutParams leftParams = new LayoutParams(thumb_size, thumb_size);
+        mThumbLeftView = new ImageView(context);
+        FrameLayout.LayoutParams leftParams = new LayoutParams(thumbPixelSize, thumbPixelSize);
         leftParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
-        addView(thumb_left, leftParams);
+        addView(mThumbLeftView, leftParams);
 
-        thumb_right = new ImageView(context);
-        thumb_right.setImageDrawable(thumbDrawable);
-        FrameLayout.LayoutParams rightparams = new LayoutParams(thumb_size, thumb_size);
+        mThumbRightView = new ImageView(context);
+        FrameLayout.LayoutParams rightparams = new LayoutParams(thumbPixelSize, thumbPixelSize);
         rightparams.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
-        addView(thumb_right, rightparams);
+        addView(mThumbRightView, rightparams);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        setLeftProgress(mLeftProgress);
+        setRightProgress(mRightProgress);
     }
 
     @Override
@@ -109,8 +137,9 @@ public class RangeBar extends FrameLayout {
         return true;
     }
 
-    public void setProgressCallback(ProgressCallback callback){
+    public RangeBar setProgressCallback(ProgressCallback callback){
         this.mCallback = callback;
+        return this;
     }
 
     public RangeBar setMax(int value){
@@ -123,40 +152,12 @@ public class RangeBar extends FrameLayout {
         return this;
     }
 
-    public RangeBar setLeftProgress(int value){
-
-        if(value < min
-                || value > max
-                || value > rightProgress){
-            throw new UnsupportedOperationException("Set Right ProgressValue");
-        }
-
-        int left = (int) (((float)value - min) / (max - min) * getMeasuredWidth());
-        thumb_left.layout(left, getPaddingTop(), left+thumb_size, getPaddingTop() + thumb_size);
-
-        return this;
-    }
-
-    public RangeBar setRightProgress(int value){
-
-        if(value < leftProgress
-                || value < min
-                || value > max){
-            throw new UnsupportedOperationException("Set Right ProgressValue");
-        }
-
-        int left = (int) (((float)value - min) / (max - min) * getMeasuredWidth());
-        thumb_right.layout(left, getPaddingTop(), left+thumb_size, getPaddingTop() + thumb_size);
-
-        return this;
-    }
-
     ViewDragHelper mViewDragHelper = null;
     ViewDragHelper.Callback mDragCallback = new ViewDragHelper.Callback() {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            if(child == thumb_left
-                    || child == thumb_right){
+            if(child == mThumbLeftView
+                    || child == mThumbRightView){
                 return true;
             }
             return false;
@@ -164,46 +165,115 @@ public class RangeBar extends FrameLayout {
 
         @Override
         public int getViewHorizontalDragRange(View child) {
-            return thumb_size;
+            return thumbPixelSize;
         }
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-            if(child == thumb_left){
+            if(child == mThumbLeftView){
+
                 if(left < 0){
                     left = 0;
                 }
 
-                if(left + thumb_size > thumb_right.getLeft()){
-                    left = thumb_right.getLeft();
+                if(left + thumbPixelSize > mThumbRightView.getLeft()){
+                    left = mThumbRightView.getLeft() - thumbPixelSize;
                 }
 
-            }else if(child == thumb_right){
+                int relDis = mThumbLeftView.getRight() - mBarView.getLeft() - thumbPixelSize / 2;
+                mProgressDrawable.setRangeLeftValue(relDis)
+                        .invalidateSelf();
 
-                if(left > getMeasuredWidth() - thumb_size){
-                    left = getMeasuredWidth() - thumb_size;
+            }else if(child == mThumbRightView){
+
+                if(left > getMeasuredWidth() - thumbPixelSize){
+                    left = getMeasuredWidth() - thumbPixelSize;
                 }
 
-                if(left < thumb_left.getRight()){
-                    left = thumb_left.getRight();
+                if(left < mThumbLeftView.getRight()){
+                    left = mThumbLeftView.getRight();
                 }
 
-            }else {
+                int relDis = mBarView.getRight() - mThumbRightView.getLeft() - thumbPixelSize / 2;
+                mProgressDrawable.setRangeRightValue(relDis)
+                        .invalidateSelf();
+
+            } else {
                 left = 0;
             }
 
-            if(mCallback != null
-                    && left > 0){
-                float thumbLeft = thumb_left.getLeft();
-                float thumbRight = thumb_right.getLeft();
-                int leftProgress = (int) (thumbLeft / getMeasuredWidth() * (max - min) + min);
-                int rightprogress = (int) (thumbRight / getMeasuredWidth() * (max - min) + min);
-                mCallback.onProgressChanged(leftProgress, rightprogress, true);
+            if(left > 0){
+                mLeftProgress = getLeftProgress();
+                mRightProgress = getRightProgress();
+                if(mCallback != null){
+                    mCallback.onProgressChanged(mLeftProgress, mRightProgress, true);
+                }
             }
 
             return left;
         }
     };
+
+
+    public int getLeftProgress(){
+        float relDis = mThumbLeftView.getRight() - mBarView.getLeft() - thumbPixelSize;
+        float percent = relDis / (mBarView.getMeasuredWidth() - thumbPixelSize * 2);
+        return (int) (percent * (max - min) + min);
+    }
+
+    public int getRightProgress(){
+        float relDis = mThumbRightView.getLeft() - mBarView.getLeft() - thumbPixelSize;
+        float percent = relDis / (mBarView.getMeasuredWidth() - thumbPixelSize * 2);
+        return (int) (percent * (max - min) + min);
+    }
+
+    public RangeBar setLeftProgress(int value){
+
+        if(value < min
+                || value > max
+                || value > mRightProgress){
+            throw new UnsupportedOperationException("Set Right ProgressValue");
+        }
+
+        mLeftProgress = value;
+        if(!ViewCompat.isAttachedToWindow(this)){
+            return this;
+        }
+
+        float percent = (float)(value - min) / (max - min);
+        int right = (int) (percent * (mBarView.getMeasuredWidth() - thumbPixelSize * 2) + mBarView.getLeft() + thumbPixelSize);
+        mThumbLeftView.layout(right-thumbPixelSize, getPaddingTop(), right, getPaddingTop() + thumbPixelSize);
+
+        int relDis = mThumbLeftView.getRight() - mBarView.getLeft() - thumbPixelSize / 2;
+        mProgressDrawable.setRangeLeftValue(relDis)
+                .invalidateSelf();
+
+        return this;
+    }
+
+    public RangeBar setRightProgress(int value){
+
+        if(value < mLeftProgress
+                || value < min
+                || value > max){
+            throw new UnsupportedOperationException("Set Right ProgressValue");
+        }
+
+        mRightProgress = value;
+        if(!ViewCompat.isAttachedToWindow(this)){
+            return this;
+        }
+
+        float percent = (float)(value - min) / (max - min);
+        int left = (int) (percent * (mBarView.getMeasuredWidth() - thumbPixelSize * 2) + mBarView.getLeft() + thumbPixelSize);
+        mThumbRightView.layout(left, getPaddingTop(), left+ thumbPixelSize, getPaddingTop() + thumbPixelSize);
+
+        int relDis = mBarView.getRight() - mThumbRightView.getLeft() - thumbPixelSize / 2;
+        mProgressDrawable.setRangeRightValue(relDis)
+                .invalidateSelf();
+
+        return this;
+    }
 
     public interface ProgressCallback{
         boolean onProgressChanged(int leftProgress, int rightProgress, boolean isFromUser);
