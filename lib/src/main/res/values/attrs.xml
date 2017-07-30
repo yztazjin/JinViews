@@ -30,7 +30,7 @@
             <enum name="bottom" value="2"></enum>
 
         </attr>
-
+        <attr name="leftMenuMovingLink" format="boolean"/>
         <attr name="leftMenuAutoClose" format="boolean"></attr>
     </declare-styleable>
 
@@ -42,7 +42,7 @@
             <enum name="bottom" value="2"></enum>
 
         </attr>
-
+        <attr name="rightMenuMovingLink" format="boolean"/>
         <attr name="rightMenuAutoClose" format="boolean"></attr>
     </declare-styleable>
 

@@ -33,6 +33,7 @@ public class SlidingLeftMenu extends FrameLayout {
     View mContentView;
 
     int mLayerLevel;//0 覆盖在Content上; 1 Content同级; 2 Content下面
+    boolean isMovingLink = false;
 
     public SlidingLeftMenu(Context context) {
         this(context, null);
@@ -49,6 +50,7 @@ public class SlidingLeftMenu extends FrameLayout {
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLeftMenu);
             mLayerLevel = ta.getInt(R.styleable.SlidingLeftMenu_leftMenuLayerLevel, 1);
+            isMovingLink = ta.getBoolean(R.styleable.SlidingLeftMenu_leftMenuMovingLink, false);
             mSupportMultipleOpen = !ta.getBoolean(R.styleable.SlidingRightMenu_rightMenuAutoClose, false);
             if(mLayerLevel != SAME
                     && mLayerLevel != TOP
@@ -187,12 +189,23 @@ public class SlidingLeftMenu extends FrameLayout {
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
 
-            if(mLayerLevel == SAME){
-                mMenuView.layout(mMenuView.getLeft() + dx,
-                        0,
-                        mMenuView.getRight() + dx,
-                        mMenuView.getMeasuredHeight());
+            if (mLayerLevel == SAME
+                    || isMovingLink) {
+                if (getFocusView() == mContentView) {
+                    mMenuView.layout(mMenuView.getLeft() + dx,
+                            0,
+                            mMenuView.getRight() + dx,
+                            mMenuView.getMeasuredHeight());
+
+                } else {
+                    mContentView.layout(mContentView.getLeft() + dx,
+                            0,
+                            mContentView.getRight() + dx,
+                            mContentView.getMeasuredHeight());
+
+                }
             }
+
         }
 
         @Override
