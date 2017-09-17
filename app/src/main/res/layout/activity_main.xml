@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:padding="30dp"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="ttyy.com.jinviews.demo.MainActivity">
 
     <TextView
@@ -27,10 +26,26 @@
         android:textSize="22sp"
         android:background="@drawable/shape_main_menu"/>
 
-    <ttyy.com.jinviews.bar.RangeBar
+    <TextView
+        android:id="@+id/tv_menu_left"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:barDrawable="#f0f"
-        app:thumbDrawable="#0f0"></ttyy.com.jinviews.bar.RangeBar>
+        android:layout_marginTop="18dp"
+        android:layout_height="80dp"
+        android:text="Menu Left Demo"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:background="@drawable/shape_main_menu"/>
+
+
+    <TextView
+        android:id="@+id/tv_menu_right"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="18dp"
+        android:text="Menu Right Demo"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:background="@drawable/shape_main_menu"/>
+
 
 </LinearLayout>

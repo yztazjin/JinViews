@@ -31,8 +31,8 @@ public class SlidingRightMenu extends FrameLayout {
     View mContentView;
     View mMenuView;
 
-    int mLayerLevel;
-    boolean isMovingLink;
+    int mLayerLevel = SAME;
+    boolean isMovingLink = true;
 
     public SlidingRightMenu(Context context) {
         this(context, null);
@@ -56,8 +56,14 @@ public class SlidingRightMenu extends FrameLayout {
                     && mLayerLevel != BOTTOM) {
                 mLayerLevel = SAME;
             }
+
             ta.recycle();
         }
+
+        if (mLayerLevel == SAME) {
+            isMovingLink = true;
+        }
+
 
     }
 
@@ -86,17 +92,9 @@ public class SlidingRightMenu extends FrameLayout {
         switch (mLayerLevel) {
             case BOTTOM:
                 mContentView.bringToFront();
-                mMenuView.layout(mContentView.getMeasuredWidth() - mMenuView.getMeasuredWidth(),
-                        0,
-                        mContentView.getMeasuredWidth(),
-                        mMenuView.getMeasuredHeight());
                 break;
             case TOP:
                 mMenuView.bringToFront();
-                mMenuView.layout(mContentView.getMeasuredWidth(),
-                        0,
-                        mContentView.getMeasuredWidth() + mMenuView.getMeasuredWidth(),
-                        mMenuView.getMeasuredHeight());
                 break;
             case SAME:
             default:
@@ -107,7 +105,39 @@ public class SlidingRightMenu extends FrameLayout {
                 break;
         }
 
-        mContentView.layout(0, 0, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());
+        if (isMenuOpened()) {
+            // 菜单打开
+
+            left = mContentView.getMeasuredWidth() - mMenuView.getMeasuredWidth();
+            mMenuView.layout(left,
+                    0,
+                    left + mMenuView.getMeasuredWidth(),
+                    mMenuView.getMeasuredHeight());
+
+            if (isMovingLink) {
+                // 联动
+                left = -mMenuView.getMeasuredHeight();
+                mContentView.layout(left,
+                        0,
+                        left + mContentView.getMeasuredWidth(),
+                        mContentView.getMeasuredHeight());
+            } else {
+                // 非联动
+                mContentView.layout(0,
+                        0,
+                        mContentView.getMeasuredWidth(),
+                        mContentView.getMeasuredHeight());
+            }
+
+        } else {
+            // 菜单没有打开
+            mContentView.layout(0,
+                    0,
+                    mContentView.getMeasuredWidth(),
+                    mContentView.getMeasuredHeight());
+
+        }
+
     }
 
 
@@ -223,8 +253,7 @@ public class SlidingRightMenu extends FrameLayout {
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
 
-            if (mLayerLevel == SAME
-                    || isMovingLink) {
+            if (isMovingLink) {
                 if (getFocusView() == mContentView) {
                     mMenuView.layout(mMenuView.getLeft() + dx,
                             0,
@@ -316,7 +345,17 @@ public class SlidingRightMenu extends FrameLayout {
 
     public boolean isMenuOpened() {
 
-        return true;
+
+        if (isMovingLink) {
+            // 菜单联动模式
+            return mContentView.getLeft() == -mMenuView.getMeasuredWidth()
+                    && mMenuView.getRight() != 0;
+        } else {
+            // 费菜单联动模式
+            return mMenuView.getRight() == mContentView.getMeasuredWidth()
+                    && mMenuView.getRight() != 0;
+        }
+
     }
 
     static LinkedList<SlidingRightMenu> menus = new LinkedList<>();
