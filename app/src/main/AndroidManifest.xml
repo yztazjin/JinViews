@@ -21,6 +21,7 @@
         <activity android:name=".IndicatorBeizerCircleActivity"/>
         <activity android:name=".MenuDemoLeftActivity"/>
         <activity android:name=".MenuDemoRithtActivity"/>
+        <activity android:name=".AnimRotateActivity"/>
     </application>
 
 </manifest>

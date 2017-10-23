@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.tv_indicator_beizercicle).setOnClickListener(this);
         findViewById(R.id.tv_menu_left).setOnClickListener(this);
         findViewById(R.id.tv_menu_right).setOnClickListener(this);
+        findViewById(R.id.tv_menu_anim_rotate).setOnClickListener(this);
     }
 
     @Override
@@ -32,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.tv_menu_right:
                 startActivity(new Intent(this, MenuDemoRithtActivity.class));
+                break;
+            case R.id.tv_menu_anim_rotate:
+                startActivity(new Intent(this, AnimRotateActivity.class));
                 break;
         }
     }

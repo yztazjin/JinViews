@@ -121,4 +121,8 @@
         <attr name="thumbDrawable" format="color|reference"/>
     </declare-styleable>
 
+    <declare-styleable name="Rotate3DImageView">
+        <attr name="image" format="reference"/>
+    </declare-styleable>
+
 </resources>

@@ -47,5 +47,15 @@
         android:textSize="22sp"
         android:background="@drawable/shape_main_menu"/>
 
+    <TextView
+        android:id="@+id/tv_menu_anim_rotate"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="18dp"
+        android:text="Menu Rotate Demo"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:background="@drawable/shape_main_menu"/>
+
 
 </LinearLayout>
