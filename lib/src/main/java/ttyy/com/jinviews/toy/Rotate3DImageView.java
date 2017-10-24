@@ -12,8 +12,10 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import ttyy.com.jinviews.R;
+
 
 /**
  * Author: hjq
@@ -33,7 +35,7 @@ public class Rotate3DImageView extends View {
     /**
      * 3D旋转Y旋转角度
      */
-    int canvas3DRotateDegreeY = -30;
+    int canvas3DRotateDegreeY = -40;
 
     /**
      * camera Y角度偏移值
@@ -48,7 +50,6 @@ public class Rotate3DImageView extends View {
     ValueAnimator anim1;
     ValueAnimator anim2;
     ValueAnimator anim3;
-    ValueAnimator anim4;
 
     AnimatorSet animSet;
 
@@ -72,7 +73,7 @@ public class Rotate3DImageView extends View {
         paint.setAntiAlias(true);
 
         anim0 = ValueAnimator.ofInt(0, canvas3DRotateDegreeY)
-                .setDuration(300);
+                .setDuration(600);
         anim0.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -82,7 +83,9 @@ public class Rotate3DImageView extends View {
         });
 
         anim1 = ValueAnimator.ofInt(0, 270)
-                .setDuration(1800);
+                .setDuration(1100);
+        anim1.setStartDelay(500);
+        anim1.setInterpolator(new DecelerateInterpolator());
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -93,6 +96,7 @@ public class Rotate3DImageView extends View {
 
         anim2 = ValueAnimator.ofInt(0, canvas3DRotateDegreeY);
         anim2.setDuration(300);
+        anim2.setStartDelay(450);
         anim2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -101,17 +105,15 @@ public class Rotate3DImageView extends View {
             }
         });
 
-        anim3 = ValueAnimator.ofFloat(0, 1);
-        anim3.setDuration(500);
-
-        anim4 = ValueAnimator.ofInt(canvas3DRotateDegreeY, 0);
-        anim4.setDuration(220);
-        anim4.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        anim3 = ValueAnimator.ofInt(canvas3DRotateDegreeY, 0);
+        anim3.setDuration(280);
+        anim3.setStartDelay(600);
+        anim3.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 degreeFoldingYOffset = degreeNoFoldedYOffset = (int) animation.getAnimatedValue();
 
-                if(degreeNoFoldedYOffset == 0){
+                if (degreeNoFoldedYOffset == 0) {
                     degreeZOffset = 0;
                 }
                 postInvalidate();
@@ -119,11 +121,11 @@ public class Rotate3DImageView extends View {
         });
 
         animSet = new AnimatorSet();
-        animSet.playSequentially(anim0, anim1, anim2, anim3, anim4);
+        animSet.playSequentially(anim0, anim1, anim2, anim3);
     }
 
-    public void rollAnim(){
-        if(animSet.isRunning()){
+    public void rollAnim() {
+        if (animSet.isRunning()) {
             return;
         }
         degreeFoldingYOffset = degreeNoFoldedYOffset = degreeZOffset = 0;
