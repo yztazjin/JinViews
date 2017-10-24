@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
@@ -46,6 +47,8 @@ public class Rotate3DImageView extends View {
      */
     int degreeZOffset = 0;
 
+    float imageCanvasScale = 0.71f;
+
     ValueAnimator anim0;
     ValueAnimator anim1;
     ValueAnimator anim2;
@@ -67,6 +70,7 @@ public class Rotate3DImageView extends View {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Rotate3DImageView);
         imageSrcDrawable = ta.getDrawable(R.styleable.Rotate3DImageView_image);
         canvas3DRotateDegreeY = ta.getInteger(R.styleable.Rotate3DImageView_degreeY, canvas3DRotateDegreeY);
+        imageCanvasScale = ta.getFloat(R.styleable.Rotate3DImageView_imageCanvasScale, imageCanvasScale);
         ta.recycle();
 
         camera = new Camera();
@@ -143,7 +147,7 @@ public class Rotate3DImageView extends View {
                 bitmap.recycle();
             }
 
-            bitmap = Bitmap.createBitmap((int) (w * 2.8f / 4), (int) (h * 2.8f / 4), Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap((int) (w * imageCanvasScale), (int) (h * imageCanvasScale), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             imageSrcDrawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
             imageSrcDrawable.draw(canvas);
@@ -152,6 +156,7 @@ public class Rotate3DImageView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.drawColor(Color.RED);
         if (bitmap == null) {
             return;
         }
