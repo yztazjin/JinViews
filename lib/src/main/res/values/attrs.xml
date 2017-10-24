@@ -123,6 +123,7 @@
 
     <declare-styleable name="Rotate3DImageView">
         <attr name="image" format="reference"/>
+        <attr name="degreeY" format="integer|reference"/>
     </declare-styleable>
 
 </resources>
