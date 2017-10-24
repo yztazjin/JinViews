@@ -66,6 +66,8 @@ public class Rotate3DImageView extends View {
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Rotate3DImageView);
         imageSrcDrawable = ta.getDrawable(R.styleable.Rotate3DImageView_image);
+        canvas3DRotateDegreeY = ta.getInteger(R.styleable.Rotate3DImageView_degreeY, canvas3DRotateDegreeY);
+        ta.recycle();
 
         camera = new Camera();
 
