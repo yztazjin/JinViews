@@ -3,6 +3,7 @@ package ttyy.com.jinviews.demo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import ttyy.com.jinviews.toy.Rotate3DImageView;
 
@@ -22,5 +23,12 @@ public class AnimRotateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anim_rotate);
         image = (Rotate3DImageView) findViewById(R.id.image);
+
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                image.rollAnim();
+            }
+        });
     }
 }
