@@ -90,7 +90,7 @@ public class Rotate3DImageView extends View {
         anim1 = ValueAnimator.ofInt(0, 270)
                 .setDuration(1100);
         anim1.setStartDelay(500);
-        anim1.setInterpolator(new DecelerateInterpolator());
+//        anim1.setInterpolator(new DecelerateInterpolator());
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
