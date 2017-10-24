@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
@@ -156,7 +155,7 @@ public class Rotate3DImageView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(Color.RED);
+        super.onDraw(canvas);
         if (bitmap == null) {
             return;
         }
