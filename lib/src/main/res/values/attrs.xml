@@ -124,6 +124,7 @@
     <declare-styleable name="Rotate3DImageView">
         <attr name="image" format="reference"/>
         <attr name="degreeY" format="integer|reference"/>
+        <attr name="imageCanvasScale" format="float|reference"/>
     </declare-styleable>
 
 </resources>
