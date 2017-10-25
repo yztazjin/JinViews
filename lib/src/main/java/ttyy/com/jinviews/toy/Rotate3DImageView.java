@@ -1,5 +1,7 @@
 package ttyy.com.jinviews.toy;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -54,6 +56,7 @@ public class Rotate3DImageView extends View {
     ValueAnimator anim3;
 
     AnimatorSet animSet;
+    boolean isAnimRunning;
 
     public Rotate3DImageView(Context context) {
         this(context, null);
@@ -90,7 +93,7 @@ public class Rotate3DImageView extends View {
         anim1 = ValueAnimator.ofInt(0, 270)
                 .setDuration(1100);
         anim1.setStartDelay(500);
-//        anim1.setInterpolator(new DecelerateInterpolator());
+        anim1.setInterpolator(new DecelerateInterpolator());
         anim1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -124,15 +127,23 @@ public class Rotate3DImageView extends View {
                 postInvalidate();
             }
         });
+        anim3.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                isAnimRunning = false;
+            }
+        });
 
         animSet = new AnimatorSet();
         animSet.playSequentially(anim0, anim1, anim2, anim3);
     }
 
     public void rollAnim() {
-        if (animSet.isRunning()) {
+        if (isAnimRunning) {
             return;
         }
+        isAnimRunning = true;
         degreeFoldingYOffset = degreeNoFoldedYOffset = degreeZOffset = 0;
         animSet.start();
     }
