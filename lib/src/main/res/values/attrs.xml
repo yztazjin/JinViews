@@ -32,6 +32,7 @@
         </attr>
         <attr name="leftMenuMovingLink" format="boolean"/>
         <attr name="leftMenuAutoClose" format="boolean"></attr>
+        <attr name="leftMenuEnableGesture" format="boolean"></attr>
     </declare-styleable>
 
     <declare-styleable name="SlidingRightMenu">
@@ -44,6 +45,7 @@
         </attr>
         <attr name="rightMenuMovingLink" format="boolean"/>
         <attr name="rightMenuAutoClose" format="boolean"></attr>
+        <attr name="rightMenuEnableGesture" format="boolean"></attr>
     </declare-styleable>
 
     <declare-styleable name="ChatBubblesImageView">
