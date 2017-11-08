@@ -34,6 +34,9 @@ public class SlidingRightMenu extends FrameLayout {
     int mLayerLevel = SAME;
     boolean isMovingLink = true;
 
+    // 是否打开手势
+    boolean boolEnableGesture = true;
+
     public SlidingRightMenu(Context context) {
         this(context, null);
     }
@@ -50,7 +53,8 @@ public class SlidingRightMenu extends FrameLayout {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingRightMenu);
             mLayerLevel = ta.getInt(R.styleable.SlidingRightMenu_rightMenuLayerLevel, 1);
             isMovingLink = ta.getBoolean(R.styleable.SlidingLeftMenu_leftMenuMovingLink, false);
-            mSupportMultipleOpen = !ta.getBoolean(R.styleable.SlidingRightMenu_rightMenuAutoClose, false);
+            mSupportMultipleOpen = ta.getBoolean(R.styleable.SlidingRightMenu_rightMenuAutoClose, true);
+            boolEnableGesture = ta.getBoolean(R.styleable.SlidingRightMenu_rightMenuEnableGesture, true);
             if (mLayerLevel != SAME
                     && mLayerLevel != TOP
                     && mLayerLevel != BOTTOM) {
@@ -198,7 +202,8 @@ public class SlidingRightMenu extends FrameLayout {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
 
-            if (mViewDragHelper.continueSettling(true)) {
+            if (mViewDragHelper.continueSettling(true)
+                    || !boolEnableGesture) {
                 return false;
             }
 
@@ -341,6 +346,14 @@ public class SlidingRightMenu extends FrameLayout {
             mViewDragHelper.smoothSlideViewTo(mMenuView, mContentView.getMeasuredWidth() - mMenuView.getMeasuredWidth(), 0);
         }
         postInvalidate();
+    }
+
+    public void setEnableGesture(boolean enable){
+        boolEnableGesture = enable;
+    }
+
+    public boolean isGestureEnabled(){
+        return boolEnableGesture;
     }
 
     public boolean isMenuOpened() {
