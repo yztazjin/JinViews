@@ -35,6 +35,9 @@ public class SlidingLeftMenu extends FrameLayout {
     int mLayerLevel = SAME;//0 覆盖在Content上; 1 Content同级; 2 Content下面
     boolean isMovingLink = false;
 
+    // 是否打开手势
+    boolean boolEnableGesture = true;
+
     public SlidingLeftMenu(Context context) {
         this(context, null);
     }
@@ -51,7 +54,8 @@ public class SlidingLeftMenu extends FrameLayout {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SlidingLeftMenu);
             mLayerLevel = ta.getInt(R.styleable.SlidingLeftMenu_leftMenuLayerLevel, 1);
             isMovingLink = ta.getBoolean(R.styleable.SlidingLeftMenu_leftMenuMovingLink, false);
-            mSupportMultipleOpen = !ta.getBoolean(R.styleable.SlidingRightMenu_rightMenuAutoClose, false);
+            mSupportMultipleOpen = ta.getBoolean(R.styleable.SlidingLeftMenu_leftMenuAutoClose, true);
+            boolEnableGesture = ta.getBoolean(R.styleable.SlidingLeftMenu_leftMenuEnableGesture, true);
             if (mLayerLevel != SAME
                     && mLayerLevel != TOP
                     && mLayerLevel != BOTTOM) {
@@ -197,7 +201,8 @@ public class SlidingLeftMenu extends FrameLayout {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
 
-            if (mViewDragHelper.continueSettling(true)) {
+            if (mViewDragHelper.continueSettling(true)
+                    || !boolEnableGesture) {
                 // 动画过程中 不可锁定View
                 return false;
             }
@@ -371,6 +376,14 @@ public class SlidingLeftMenu extends FrameLayout {
             return mMenuView.getRight() == mMenuView.getMeasuredWidth()
                     && mMenuView.getRight() != 0;
         }
+    }
+
+    public void setEnableGesture(boolean enable){
+        boolEnableGesture = enable;
+    }
+
+    public boolean isGestureEnabled(){
+        return boolEnableGesture;
     }
 
     static LinkedList<SlidingLeftMenu> menus = new LinkedList<>();
